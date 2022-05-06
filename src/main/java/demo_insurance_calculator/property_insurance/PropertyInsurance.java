@@ -1,6 +1,39 @@
 package demo_insurance_calculator.property_insurance;
 
 import static demo_insurance_calculator.CommonUtils.getValidNumericUserInput;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.DEFAULT_FLAT_INSURANCE_PREMIUM;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.DEFAULT_HOUSE_INSURANCE_PREMIUM;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FIRST_LEVEL_FLAT_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FIRST_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FIRST_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FLAT_GROUND_FLOOR;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FLAT_GROUND_FLOOR_OR_LAST_FLOOR_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FOURTH_LEVEL_FLAT_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.FOURTH_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.HOUSE_SKYLIGHTS_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_FLAT_SUM_INSURED_WITHOUT_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_FLAT_SUM_INSURED_WITH_FIRST_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_FLAT_SUM_INSURED_WITH_SECOND_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_FLAT_SUM_INSURED_WITH_THIRD_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_HOUSE_SUM_INSURED_WITHOUT_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_HOUSE_SUM_INSURED_WITH_FIRST_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_HOUSE_SUM_INSURED_WITH_SECOND_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_HOUSE_SUM_INSURED_WITH_THIRD_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_METRAGE_WITHOUT_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_NUMBER_OF_FLOORS_WITHOUT_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_YEAR_OF_CONSTRUCTION_WITHOUT_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_YEAR_OF_CONSTRUCTION_WITH_FIRST_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MAXIMUM_YEAR_OF_CONSTRUCTION_WITH_SECOND_LEVEL_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.METRAGE_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MOVABLE_FLAT_DIVIDER;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.MOVABLE_HOUSE_DIVIDER;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.NUMBER_OF_FLOORS_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.SECOND_LEVEL_FLAT_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.SECOND_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.SECOND_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.THIRD_LEVEL_FLAT_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.THIRD_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+import static demo_insurance_calculator.property_insurance.ConstPropertyInsuranceVariant.THIRD_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
 
 import demo_insurance_calculator.FileCreator;
 import java.util.Locale;
@@ -69,17 +102,17 @@ public class PropertyInsurance {
   private Double calculateFlatInsuranceWithMovable() {
     System.out.print("10. Na jaką sumę chcesz ubezpieczyć ruchomości domowe (w PLN): ---> ");
     int movableSumInsured = getValidNumericUserInput(scanner);;
-    insurancePremium *= 1 + movableSumInsured / 100000;
+    insurancePremium *= 1 + movableSumInsured / MOVABLE_FLAT_DIVIDER;
     return insurancePremium;
   }
 
   private Double calculateFlatInsuranceWithoutMovable() {
-    insurancePremium = 100;
+    insurancePremium = DEFAULT_FLAT_INSURANCE_PREMIUM;
 
     increaseIncurancePremiumByMetrage();
     int numberOfFloors = increaseInsurancePremiumByFloorsNumber();
-    increaseInsurancePremiumForFirstOrLastFloor(numberOfFloors);
     increaseInsurancePremiumByYearOfConstruction();
+    increaseInsurancePremiumForGroundFloorOrLastFloor(numberOfFloors);
     increaseInsurancePremiumByFlatInsuranceSum();
     return insurancePremium;
   }
@@ -89,14 +122,14 @@ public class PropertyInsurance {
     int sumInsured = getValidNumericUserInput(scanner);;
     System.out.println();
 
-    if (sumInsured > 999999) {
-      insurancePremium *= 2;
-    } else if (sumInsured > 799999) {
-      insurancePremium *= 1.8;
-    } else if (sumInsured > 499999) {
-      insurancePremium *= 1.6;
-    } else if (sumInsured > 299999) {
-      insurancePremium *= 1.3;
+    if (sumInsured > MAXIMUM_HOUSE_SUM_INSURED_WITH_THIRD_LEVEL_INCREASE) {
+      insurancePremium *= FOURTH_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_HOUSE_SUM_INSURED_WITH_SECOND_LEVEL_INCREASE) {
+      insurancePremium *= THIRD_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_HOUSE_SUM_INSURED_WITH_FIRST_LEVEL_INCREASE) {
+      insurancePremium *= SECOND_LEVEL_HOUSE_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_HOUSE_SUM_INSURED_WITHOUT_INCREASE) {
+      insurancePremium *= FIRST_LEVEL_HOUSE_SUM_INSURED_INCREASE;
     }
   }
 
@@ -105,14 +138,14 @@ public class PropertyInsurance {
     int sumInsured = getValidNumericUserInput(scanner);;
     System.out.println();
 
-    if (sumInsured > 999999) {
-      insurancePremium *= 2;
-    } else if (sumInsured > 799999) {
-      insurancePremium *= 1.8;
-    } else if (sumInsured > 499999) {
-      insurancePremium *= 1.6;
-    } else if (sumInsured > 299999) {
-      insurancePremium *= 1.3;
+    if (sumInsured > MAXIMUM_FLAT_SUM_INSURED_WITH_THIRD_LEVEL_INCREASE) {
+      insurancePremium *= FOURTH_LEVEL_FLAT_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_FLAT_SUM_INSURED_WITH_SECOND_LEVEL_INCREASE) {
+      insurancePremium *= THIRD_LEVEL_FLAT_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_FLAT_SUM_INSURED_WITH_FIRST_LEVEL_INCREASE) {
+      insurancePremium *= SECOND_LEVEL_FLAT_SUM_INSURED_INCREASE;
+    } else if (sumInsured > MAXIMUM_FLAT_SUM_INSURED_WITHOUT_INCREASE) {
+      insurancePremium *= FIRST_LEVEL_FLAT_SUM_INSURED_INCREASE;
     }
   }
 
@@ -120,21 +153,21 @@ public class PropertyInsurance {
     System.out.println("7. Podaj rok budowy budynku");
     int yearOfConstruction = getValidNumericUserInput(scanner);;
     System.out.println();
-    if (yearOfConstruction < 1980) {
-      insurancePremium *= 1.6;
-    } else if (yearOfConstruction < 2000) {
-      insurancePremium *= 1.3;
-    } else if (yearOfConstruction < 2012) {
-      insurancePremium *= 1.1;
+    if (yearOfConstruction < MAXIMUM_YEAR_OF_CONSTRUCTION_WITH_SECOND_LEVEL_INCREASE) {
+      insurancePremium *= THIRD_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
+    } else if (yearOfConstruction < MAXIMUM_YEAR_OF_CONSTRUCTION_WITH_FIRST_LEVEL_INCREASE) {
+      insurancePremium *= SECOND_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
+    } else if (yearOfConstruction < MAXIMUM_YEAR_OF_CONSTRUCTION_WITHOUT_INCREASE) {
+      insurancePremium *= FIRST_LEVEL_YEAR_OF_CONSTRUCTION_INCREASE;
     }
   }
 
-  private void increaseInsurancePremiumForFirstOrLastFloor(int numberOfFloors) {
-    System.out.println("7. Numer piętra na którym znajduje się ubezpieczane mieszkanie. Jeśli parter - wpisz 0");
+  private void increaseInsurancePremiumForGroundFloorOrLastFloor(int numberOfFloors) {
+    System.out.println("8. Numer piętra na którym znajduje się ubezpieczane mieszkanie. Jeśli parter - wpisz 0");
     int floorNumber = getValidNumericUserInput(scanner);;
     System.out.println();
-    if (floorNumber == 0 || floorNumber == numberOfFloors) {
-      insurancePremium *= 1.6;
+    if (floorNumber == FLAT_GROUND_FLOOR || floorNumber == numberOfFloors) {
+      insurancePremium *= FLAT_GROUND_FLOOR_OR_LAST_FLOOR_INCREASE;
     }
   }
 
@@ -142,8 +175,8 @@ public class PropertyInsurance {
     System.out.println("6. Podaj ilość pięter w budynku");
     int numberOfFloors = getValidNumericUserInput(scanner);;
     System.out.println();
-    if (numberOfFloors > 3) {
-      insurancePremium *= 1.15;
+    if (numberOfFloors > MAXIMUM_NUMBER_OF_FLOORS_WITHOUT_INCREASE) {
+      insurancePremium *= NUMBER_OF_FLOORS_INCREASE;
     }
     return numberOfFloors;
   }
@@ -152,20 +185,20 @@ public class PropertyInsurance {
     System.out.println("5. Podaj metraż nieruchomości w m2");
     int metrage = getValidNumericUserInput(scanner);;
     System.out.println();
-    if (metrage > 40) {
-      insurancePremium *= 1.5;
+    if (metrage > MAXIMUM_METRAGE_WITHOUT_INCREASE) {
+      insurancePremium *= METRAGE_INCREASE;
     }
   }
 
   private Double calculateHouseInsuranceWithMovable() {
     System.out.print("10. Na jaką sumę chcesz ubezpieczyć ruchomości domowe (w PLN): ---> ");
     int movableSumInsured = getValidNumericUserInput(scanner);;
-    insurancePremium *= 1 + movableSumInsured / 80000;
+    insurancePremium *= 1 + movableSumInsured / MOVABLE_HOUSE_DIVIDER;
     return insurancePremium;
   }
 
   private Double calculateHouseInsuranceWithoutMovable() {
-    insurancePremium = 200;
+    insurancePremium = DEFAULT_HOUSE_INSURANCE_PREMIUM;
     increaseIncurancePremiumByMetrage();
     increaseInsurancePremiumByFloorsNumber();
     increaseInsurancePremiumByYearOfConstruction();
@@ -180,7 +213,7 @@ public class PropertyInsurance {
     String areThereSkyLights = scanner.next();
     System.out.println();
     if (areThereSkyLights.equalsIgnoreCase("T")) {
-      insurancePremium *= 1.2;
+      insurancePremium *= HOUSE_SKYLIGHTS_INCREASE;
     }
   }
 

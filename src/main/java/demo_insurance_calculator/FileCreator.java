@@ -34,7 +34,7 @@ public class FileCreator {
       printWriter.println("Kalkulacja ubezpieczenia nr " + calculationNumber);
       printWriter.println("Właściciel nieruchomości: " + propertyOwner);
       printWriter.println("Adres nieruchomości: " + propertyAdress);
-      printWriter.println("Składka ubezpieczenia w wybranym pakiecie: " + price + " PLN.");
+      printWriter.println("Składka ubezpieczenia wynosi: " + price + " PLN.");
       printWriter.close();
       System.out.println("Plik został zapisany na pulpicie: " + insurance_calculation.getName());
     } catch (IOException e) {
